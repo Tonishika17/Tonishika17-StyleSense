@@ -1,0 +1,6 @@
+id,bust,waist,hip,expected_type
+1,36,26,37,hourglass
+2,34,28,39,pear
+3,38,36,38,apple
+4,36,33,36,rectangle
+5,40,30,34,inverted_triangle
