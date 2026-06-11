@@ -1,6 +1,6 @@
 def determine_body_type(shoulder, bust, waist, hip):
     """
-    Determine body type based on body measurements using optimized classification rules.
+    Determine body type based on body measurements using classification rules.
     
     All measurements should be in the same unit (inches or cm).
     
@@ -17,38 +17,31 @@ def determine_body_type(shoulder, bust, waist, hip):
     B = bust
     H = hip
     W = waist
+    S = shoulder
     
-    # Pre-calculate key measurement differences for efficiency
-    bust_hip_diff = B - H          # (B-H)
-    hip_bust_diff = H - B          # (H-B)
-    bust_waist_diff = B - W        # (B-W)
-    hip_waist_diff = H - W         # (H-W)
-    
-    # Hourglass: (B-H) ≤ 1 AND (H-B) < 3.6 AND ((B-W) ≥ 9 OR (H-W) ≥ 10)
-    # Balanced bust and hips with pronounced waist definition
-    if bust_hip_diff <= 1 and hip_bust_diff < 3.6 and (bust_waist_diff >= 9 or hip_waist_diff >= 10):
+    # HOURGLASS: Bust ≈ Hip with significantly smaller waist
+    # Rule: abs(bust - hip) <= 0.05 * max(bust, hip) AND waist <= 0.75 * min(bust, hip)
+    if abs(B - H) <= 0.05 * max(B, H) and W <= 0.75 * min(B, H):
         return "Hourglass"
     
-    # Pear: (H-B) ≥ 3.6 AND (H-W) < 9
-    # Hips significantly larger than bust, waist only slightly smaller than hips
-    if hip_bust_diff >= 3.6 and hip_waist_diff < 9:
+    # PEAR: Hip noticeably larger than Bust
+    # Rule: hip >= bust * 1.05 AND waist < hip * 0.85
+    if H >= B * 1.05 and W < H * 0.85:
         return "Pear"
     
-    # Inverted Triangle: (B-H) ≥ 3.6 AND (B-W) < 9
-    # Bust significantly larger than hips, waist only slightly smaller than bust
-    if bust_hip_diff >= 3.6 and bust_waist_diff < 9:
+    # INVERTED TRIANGLE: Shoulders/Bust wider than Hip
+    # Rule: (shoulder > hip * 1.05) OR (bust > hip * 1.05)
+    if S > H * 1.05 or B > H * 1.05:
         return "Inverted Triangle"
     
-    # Rectangle: (H-B) < 3.6 AND (B-H) < 3.6 AND (B-W) < 9 AND (H-W) < 10
-    # Bust and hips nearly equal with minimal waist definition
-    if abs(bust_hip_diff) < 3.6 and bust_waist_diff < 9 and hip_waist_diff < 10:
-        return "Rectangle"
+    # APPLE: Waist dominant
+    # Rule: waist >= bust * 0.90 OR waist >= hip * 0.90
+    if W >= B * 0.90 or W >= H * 0.90:
+        return "Apple"
     
-    # Apple: 0.80 ≤ (W/H) ≤ 0.85
-    # Waist to hip ratio within the defined range
-    if H > 0:  # Prevent division by zero
-        waist_hip_ratio = W / H
-        if 0.80 <= waist_hip_ratio <= 0.85:
-            return "Apple"
+    # RECTANGLE: Bust ≈ Waist ≈ Hip
+    # Rule: abs(bust-hip) <= 0.05*max(bust,hip) AND waist > 0.75*min(bust,hip)
+    if abs(B - H) <= 0.05 * max(B, H) and W > 0.75 * min(B, H):
+        return "Rectangle"
     
     return "Unknown"
