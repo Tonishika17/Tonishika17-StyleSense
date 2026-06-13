@@ -1,6 +1,6 @@
 import kagglehub
 from kagglehub import KaggleDatasetAdapter
-from body_type import determine_body_type
+from body_analysis.body_type import determine_body_type
 
 DATASET_HANDLE = "zara2099/personalized-clothing-and-body-measurements-data"
 DATASET_FILE = "personalized_clothing_dataset.csv"
